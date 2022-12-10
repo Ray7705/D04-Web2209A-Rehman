@@ -1,9 +1,14 @@
 package helicopter;
 
-public class Program {
+import helicopter.helicopters.Helicopter;
+import helicopter.menus.HelicopterMenu;
 
-    public static void main(String[] args) {
-        System.out.println("Hello world!");
+public class Program
+{
+    public static void main(String[] args)
+    {
+        Helicopter helicopter = new Helicopter();
+        HelicopterMenu menu = new HelicopterMenu(helicopter);
+        menu.start();
     }
-
 }
