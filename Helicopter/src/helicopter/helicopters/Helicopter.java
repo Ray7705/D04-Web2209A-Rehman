@@ -1,4 +1,5 @@
 package helicopter.helicopters;
+import java.util.Random;
 
 public class Helicopter
 {
@@ -70,6 +71,7 @@ public class Helicopter
     }
 
 
+
     //is
     public boolean isEngineRunning()
     {
@@ -123,4 +125,96 @@ public class Helicopter
         }
     }
 
+    public static double randomDistance() {
+        Random rand = new Random();
+        return rand.nextInt(101) + 400;
+    }
+    public double autoFlyUp()
+    {
+        double altitude;
+        altitude = getAltitude() + randomDistance();
+
+        if (altitude >= getMaxAltitude()){
+            altitude =  getMaxAltitude();
+        }
+
+        return altitude;
+    }
+    public double autoFlyDown()
+    {
+        double altitude;
+        altitude = Math.abs(getAltitude() - randomDistance());
+        if (altitude <= getMinAltitude()){
+            altitude = getMinAltitude();
+        }
+        return altitude;
+
+    }
+    public double flyUp(double altitude)
+    {
+        double alt;
+        alt = getAltitude() + altitude;
+        if (alt >= getMaxAltitude()){
+            alt = getMaxAltitude();
+        }
+        return alt;
+    }
+
+    public double flyDown(double altitude)
+    {
+        double alt;
+        alt = Math.abs(getAltitude() - altitude);
+        if (alt <= getMinAltitude()){
+            alt = getMinAltitude();
+        }
+        return alt;
+    }
+    public boolean canFlyToAltitude()
+    {
+        return
+                getAltitude() < getMaxAltitude()
+                && isFlying()
+                && isLanded()
+                && !isFuelEmpty()
+                && isEngineRunning();
+
+    }
+    public void flyToAltitude(double altitude)
+    {
+        if (canFlyToAltitude()){
+            flyUp(altitude);
+            flyDown(altitude);
+            autoFlyUp();
+            autoFlyDown();
+
+        }
+    }
+
+    public void fuelConsumption(double altitude)
+    {
+        if (altitude % 100 == 0){
+            fuelLevel--;
+        }
+    }
+    public boolean canExplode(){
+        return isFlying()
+                && isFuelEmpty();
+    }
+    public void explode()
+    {
+        if (canExplode())
+        {
+            engineRunning = false;
+        }
+    }
+
+    public void land()
+    {
+        this.altitude = getMinAltitude();
+    }
+
+    public void refuel()
+    {
+        this.fuelLevel = getMaxFuelLevel();
+    }
 }

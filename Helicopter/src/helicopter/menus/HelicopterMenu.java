@@ -1,4 +1,5 @@
 package helicopter.menus;
+import java.util.Scanner;
 
 import helicopter.helicopters.Helicopter;
 import utility.console.ConsoleMenu;
@@ -25,6 +26,12 @@ public class    HelicopterMenu
         options.add("Start");
         options.add("Stop");
         options.add("Display");
+        options.add("Auto Fly Up");
+        options.add("Auto Fly Down");
+        options.add("Fly Up");
+        options.add("Fly Down");
+        options.add("Land");
+        options.add("Refuel");
         options.add("Exit");
 
         return new ConsoleMenu(title, message, options);
@@ -48,7 +55,19 @@ public class    HelicopterMenu
                     break;
                 case 3: displayHelicopter();
                     break;
-                case 4:
+                case 4: autoFlyUpHelicopter();
+                    break;
+                case 5: autoFlyDownHelicopter();
+                    break;
+                case 6: flyUpHelicopter();
+                    break;
+                case 7: flyDownHelicopter();
+                    break;
+                case 8: landHelicopter();
+                    break;
+                case 9: refuelHelicopter();
+                    break;
+                case 10:
                     return;
 
 
@@ -85,6 +104,89 @@ public class    HelicopterMenu
             displayHelicopter();
         }
     }
+
+    private void autoFlyUpHelicopter()
+    {
+        if (helicopter.canFlyToAltitude())
+        {
+            System.out.println("Auto Pilot Engaged! Flying Up!");
+            helicopter.autoFlyUp();
+            displayHelicopter();
+        }
+        else
+        {
+            System.out.println("Error: Auto Pilot Not Engaged! Cannot Fly Up!");
+            displayHelicopter();
+        }
+    }
+
+    private void autoFlyDownHelicopter()
+    {
+        if (helicopter.canFlyToAltitude())
+        {
+
+            System.out.println("Auto Pilot Engaged! Flying Down!");
+            helicopter.autoFlyDown();
+            displayHelicopter();
+        }
+        else
+        {
+            System.out.println("Error: Auto Pilot Not Engaged! Cannot Fly Down!");
+            displayHelicopter();
+        }
+    }
+
+    private void flyUpHelicopter()
+    {
+        if (helicopter.canFlyToAltitude())
+        {
+
+            Scanner in = new Scanner(System.in);
+            System.out.println("Please Enter the Altitude: ");
+            double altitude = in.nextDouble();
+            System.out.println("Flying Up!");
+            helicopter.flyUp(altitude);
+            displayHelicopter();
+        }
+        else
+        {
+            System.out.println("Error: Cannot Fly Up!");
+            displayHelicopter();
+        }
+    }
+    private void flyDownHelicopter()
+    {
+        if (helicopter.canFlyToAltitude())
+        {
+            Scanner in = new Scanner(System.in);
+            System.out.println("Please Enter the Altitude: ");
+            double altitude = in.nextDouble();
+            System.out.println("Flying Down!");
+            helicopter.flyDown(altitude);
+            displayHelicopter();
+        }
+        else
+        {
+            System.out.println("Error: Cannot Fly Down!");
+            displayHelicopter();
+        }
+    }
+
+    private void landHelicopter()
+    {
+
+        System.out.println("Landed");
+        helicopter.land();
+        displayHelicopter();
+    }
+    private void refuelHelicopter()
+    {
+
+        System.out.println("Refueled");
+        helicopter.refuel();
+        displayHelicopter();
+    }
+
     private void displayHelicopter()
     {
         System.out.println(helicopter.getDescription());
