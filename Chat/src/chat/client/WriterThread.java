@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Objects;
 
 public class WriterThread extends Thread
 {
@@ -19,9 +20,17 @@ public class WriterThread extends Thread
 
     public WriterThread(Socket socket) throws IOException
     {
+
         // TODO: Store socket parameter in field
         // TODO: Initialize writer field by creating a PrintWriter with socket's output stream
         // TODO: Initialize reader field by creating a BufferedReader that reads from System.in
+        socket = Objects.requireNonNull(socket);
+        out = new PrintWriter(socket.getOutputStream());
+        consoleReader = new BufferedReader(new InputStreamReader(System.in));
+
+
+
+
     }
 
     @Override

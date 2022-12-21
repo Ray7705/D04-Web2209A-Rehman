@@ -9,11 +9,11 @@ import java.net.Socket;
 public class ReaderThread extends Thread
 {
     // TODO: BufferedReader field (for reading from server)
-    
+    private final BufferedReader reader;
 
     public ReaderThread(Socket socket) throws IOException
     {
-        // TODO: Initialize reader field by creating a BufferedReader with the socket's input stream
+        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
     @Override

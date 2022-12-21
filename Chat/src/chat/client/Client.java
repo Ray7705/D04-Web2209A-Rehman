@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Objects;
 
 public class Client
 {
@@ -13,6 +14,8 @@ public class Client
     public Client(String host, int port)
     {
         // TODO: Initialize fields equal to parameters
+        host = Objects.requireNonNull(host);
+        port = port;
     }
 
     public void start()
