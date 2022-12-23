@@ -1,5 +1,6 @@
 package bath.controllers;
 
+import bath.models.Bath;
 import bath.views.SetupView;
 import utility.swing.windows.Window;
 

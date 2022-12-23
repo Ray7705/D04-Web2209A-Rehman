@@ -1,14 +1,30 @@
 package bath.models;
 
+import bath.exceptions.BathException;
+import bath.exceptions.CapacityException;
+
 public final class Bath
 {
     // TODO: Declare fields
-
-    public Bath(double capacity)
+    private static int nextUserId= 1000001;
+    private final int userId;
+    private double capacity;
+    private boolean waterIsDraining;
+    private boolean waterIsRunning;
+    private double currentLevel;
+    private final double MAX_LEVEL;
+    private final double MIN_LEVEL;
+    public Bath(double capacity) throws CapacityException
     {
+        waterIsDraining = false;
+        waterIsRunning = false;
+        MIN_LEVEL = 50;
+        MAX_LEVEL = 200;
+        userId = nextUserId++;
         // TODO: If capacity is invalid (not between 50 and 200 inclusively), throw a capacity exception
+        throw new CapacityException(capacity, MIN_LEVEL , MAX_LEVEL);
 
-        // TODO: Initialize fields
+
 
         // TODO: Create and start a daemon thread to run the updateLevel method
         //  Create a new thread using a method reference to implement Runnable
@@ -19,67 +35,78 @@ public final class Bath
     // Method to be executed by level updater thread
     private void updateLevel()
     {
-        // TODO: Repeatedly, while water is draining and/or running:
-        //  Calculate level offset (amount to increase or decrease per half second)
-        //      If draining, amount drained per second = 16.5
-        //      If running, amount filled per second = 12
-        //  Call setter method to set level based on current level and calculated offset
-        //  Sleep thread for half a second (500 milliseconds)
+        double offset;
+        if (waterIsRunning){
+            offset = -16.5 / 2;
+        }else {
+            offset = 12 / 2;
+        }
+        setLevel(getLevel() + offset);
+
+        // Sleep thread for half a second
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            // Handle exception if the thread is interrupted
+        }
     }
 
     private void setLevel(double level)
     {
         // TODO: If level parameter is actually different than current level:
-        //  Change the current level, making sure that it doesn't go outside the valid range
-        //  Notify each listener of a level changed event
-        //  If bath is empty or full, automatically stop draining water and stop running water
+        if (level != this.currentLevel) {
+            // Change the current level, making sure it doesn't go outside the valid range
+            this.currentLevel = Math.max(Math.min(level, MAX_LEVEL), MIN_LEVEL);
+
+            // Notify each listener of a level changed event
+
+
+            // If bath is empty or full, automatically stop draining water and stop running water
+            if (this.currentLevel == MIN_LEVEL || this.currentLevel == MAX_LEVEL) {
+                //stopDrainingWater();
+                //stopRunningWater();
+            }
+        }
     }
 
     public int getId()
     {
-        // TODO
-        return 0;
+        return userId;
     }
 
     public double getCapacity()
     {
-        // TODO
-        return 0;
+        return capacity;
     }
 
     public double getLevel()
     {
-        // TODO
-        return 0;
+        return currentLevel;
     }
 
     public boolean isDrainingWater()
     {
-        // TODO
-        return false;
+        return waterIsDraining;
     }
 
     public boolean isRunningWater()
     {
-        // TODO
-        return false;
+        return waterIsRunning;
     }
 
     public boolean isEmpty()
     {
-        // TODO
-        return false;
+        return this.currentLevel == MIN_LEVEL;
     }
 
     public boolean isFull()
     {
-        // TODO
-        return false;
+        return this.currentLevel == MAX_LEVEL;
     }
 
     public void addListener(IBathListener listener)
     {
-        // TODO
+
     }
 
     public void removeListener(IBathListener listener)
@@ -87,33 +114,49 @@ public final class Bath
         // TODO
     }
 
-    public void startDrainingWater()
+    public void startDrainingWater() throws BathException
     {
-        // TODO: If water is already draining, throw a bath exception with a user-friendly error message
-        // TODO: If bath is empty, throw a bath exception with a user-friendly error message
-        // TODO: Perform action by changing bath state
+        if (waterIsDraining) {
+            throw new BathException("The water is already draining.");
+        }
+        if (currentLevel == MIN_LEVEL) {
+            throw new BathException("The bath is already empty.");
+        }
+        waterIsDraining = true;
+
+
         // TODO: Notify each listener of a drain changed event
     }
 
-    public void stopDrainingWater()
+    public void stopDrainingWater() throws BathException
     {
-        // TODO: If water is already not draining, throw a bath exception with a user-friendly error message
-        // TODO: Perform action by changing bath state
+        if (!waterIsDraining) {
+            throw new BathException("The water is already not draining.");
+        }
+        waterIsDraining = false;
         // TODO: Notify each listener of a drain changed event
     }
 
-    public void startRunningWater()
+    public void startRunningWater() throws BathException
     {
-        // TODO: If water is already running, throw a bath exception with a user-friendly error message
-        // TODO: If bath is full, throw a bath exception with a user-friendly error message
-        // TODO: Perform action by changing bath state
+        if (waterIsRunning) {
+            throw new BathException("The water is already running.");
+        }
+        if (currentLevel == MAX_LEVEL) {
+            throw new BathException("The bath is already full.");
+        }
+
+        waterIsRunning = true;
         // TODO: Notify each listener of a faucet changed event
     }
 
-    public void stopRunningWater()
+    public void stopRunningWater() throws BathException
     {
-        // TODO: If water is already not running, throw a bath exception with a user-friendly error message
-        // TODO: Perform action by changing bath state
+        if (!waterIsRunning) {
+            throw new BathException("The water is already not running.");
+        }
+        waterIsRunning = false;
+
         // TODO: Notify each listener of a faucet changed event
     }
 }
