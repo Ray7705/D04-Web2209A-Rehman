@@ -35,6 +35,11 @@ public final class BathView extends JPanel implements IBathListener
     public BathView(Bath bath)
     {
         // TODO: Initialize components to show initial state of bath model
+        JFrame frame = new JFrame();
+        frame.setContentPane(new BathView(bath));
+        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setVisible(true);
 
         faucetLabel = createLabel(" "); // TODO: "Running" or "Stopped"
         drainLabel = createLabel(" "); // TODO: "Draining" or "Stopped"
@@ -226,25 +231,44 @@ public final class BathView extends JPanel implements IBathListener
     @Override
     public void drainChanged(DrainChangedEvent event)
     {
-        // TODO: Update drain label to display "Draining" or "Stopped" based on event
+        if (event.drainIsDraining())
+            if (event.drainIsDraining()) {
+                drainLabel.setText("Draining");
+            } else {
+                drainLabel.setText("Stopped");
+            }
         // TODO: Bonus: Make method thread-safe by using SwingUtilities.invokeLater to update label on EDT
+
+
     }
 
     @Override
     public void faucetChanged(FaucetChangedEvent event)
     {
-        // TODO: Update faucet label to display "Running" or "Stopped" based on event
-        // TODO: Bonus: Make method thread-safe by using SwingUtilities.invokeLater to update label on EDT
+        if (event.faucetIsRunning())
+        {
+            faucetLabel.setText("Running");
+        }
+        else
+        {
+            faucetLabel.setText("Stopped");
+        }
+
     }
 
     @Override
     public void levelChanged(LevelChangedEvent event)
     {
-        // TODO: Update level progress bar based on event
-        // TODO: Update level label based on event, using level formatter to format label text
-        // TODO: If bath is empty, display message "Bath is empty"
-        // TODO: Otherwise, if bath is full, display message "Bath is full"
-        // TODO: Bonus: Make method thread-safe by using SwingUtilities.invokeLater to update components on EDT
+        levelLabel.setText(levelFormatter.format(event.getLevel()));
+
+        if (event.bathIsEmpty())
+        {
+            messageLabel.setText("Bath is empty");
+        }
+        else if (event.bathIsFull())
+        {
+            messageLabel.setText("Bath is full");
+        }
     }
 
     private static String getDrainText(boolean draining)

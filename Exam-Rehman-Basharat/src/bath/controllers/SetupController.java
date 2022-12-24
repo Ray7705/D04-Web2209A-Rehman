@@ -1,6 +1,10 @@
 package bath.controllers;
 
+import bath.exceptions.CapacityException;
+import bath.loggers.BathLogger;
 import bath.models.Bath;
+import bath.network.BathClient;
+import bath.views.BathView;
 import bath.views.SetupView;
 import utility.swing.windows.Window;
 
@@ -26,6 +30,24 @@ public final class SetupController
 
     private void onCreateClicked(ActionEvent event)
     {
+        try {
+            double capacity = Double.parseDouble(view.getCapacity());
+            Bath bath = new Bath(capacity);
+            BathView bathView = new BathView(bath);
+            BathController bathController = new BathController(bath, bathView);
+
+            BathLogger logger = new BathLogger();
+            bath.addListener(logger);
+
+            // Create bath client and add it as a listener to the bath model
+            BathClient client = new BathClient();
+            bath.addListener(client);
+
+            window.setContentPane(bathView);
+            window.setVisible(true);
+        } catch (CapacityException e) {
+            throw new RuntimeException(e);
+        }
         // TODO
         //  Create bath model + view + controller
         //  Create bath logger and add it as a bath listener

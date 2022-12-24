@@ -1,7 +1,12 @@
 package bath.controllers;
 
+import bath.models.Bath;
+import bath.views.BathView;
+
 public final class BathController
 {
+    public BathController(Bath bath, BathView bathView) {
+    }
     // TODO
     //  Define input handler methods for each button in the view
     //  Do not forget to configure model and view in constructor by adding listeners to model and view

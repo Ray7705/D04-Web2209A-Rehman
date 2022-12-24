@@ -2,13 +2,14 @@ package bath.models;
 
 import bath.exceptions.BathException;
 import bath.exceptions.CapacityException;
+import java.lang.Thread;
 
 public final class Bath
 {
     // TODO: Declare fields
     private static int nextUserId= 1000001;
     private final int userId;
-    private double capacity;
+    public double capacity;
     private boolean waterIsDraining;
     private boolean waterIsRunning;
     private double currentLevel;
@@ -21,15 +22,16 @@ public final class Bath
         MIN_LEVEL = 50;
         MAX_LEVEL = 200;
         userId = nextUserId++;
-        // TODO: If capacity is invalid (not between 50 and 200 inclusively), throw a capacity exception
-        throw new CapacityException(capacity, MIN_LEVEL , MAX_LEVEL);
-
-
 
         // TODO: Create and start a daemon thread to run the updateLevel method
         //  Create a new thread using a method reference to implement Runnable
         //  Set the thread to be a daemon thread (so it won't keep your program running after closing all windows)
         //  Start the thread
+        Thread thread = new Thread(this::updateLevel);
+        thread.setDaemon(true);
+        thread.start();
+        // TODO: If capacity is invalid (not between 50 and 200 inclusively), throw a capacity exception
+        throw new CapacityException(capacity, MIN_LEVEL , MAX_LEVEL);
     }
 
     // Method to be executed by level updater thread
