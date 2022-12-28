@@ -9,6 +9,7 @@ public class Helicopter
     private double fuelLevel;
     private double altitude;
     private boolean engineRunning;
+    private boolean exploded;
 
     public Helicopter()
     {
@@ -16,6 +17,7 @@ public class Helicopter
         fuelLevel = getMaxFuelLevel();
         altitude = getMinAltitude();
         engineRunning = false;
+        exploded = false;
     }
 
     @Override
@@ -29,7 +31,8 @@ public class Helicopter
         return toString()
                 + ": " + (isEngineRunning() ? "Engine on" : "Engine off")
                 + ", " + "Altitude = " + altitude
-                + ", " + "Fuel level = " + fuelLevel;
+                + ", " + "Fuel level = " + fuelLevel
+                + (exploded ? " (Exploded)" : " (Functional)");
     }
 
     //getters
@@ -46,6 +49,10 @@ public class Helicopter
     public double getAltitude()
     {
         return altitude;
+    }
+    public double getFuelRate()
+    {
+        return 1.0 / 100.0;
     }
 
 
@@ -94,6 +101,10 @@ public class Helicopter
     {
         return altitude > getMinAltitude();
     }
+    public boolean isExploded()
+    {
+        return exploded;
+    }
 
 
     //start stop engine
@@ -101,7 +112,8 @@ public class Helicopter
     {
         return !engineRunning
                 && isLanded()
-                && !isFuelEmpty();
+                && !isFuelEmpty()
+                && !exploded;
     }
     public void startEngine()
     {
@@ -114,7 +126,8 @@ public class Helicopter
     public boolean canStopEngine()
     {
         return engineRunning
-                && isLanded();
+                && isLanded()
+                && !exploded;
     }
 
     public void stopEngine()
@@ -158,6 +171,14 @@ public class Helicopter
             alt = getMaxAltitude();
         }
         return alt;
+    }
+    public boolean canRefuel(double amount)
+    {
+        return !engineRunning
+                && !exploded
+                && isLanded()
+                && !isFuelFull()
+                && amount > 0;
     }
 
     public double flyDown(double altitude)
@@ -217,4 +238,21 @@ public class Helicopter
     {
         this.fuelLevel = getMaxFuelLevel();
     }
+    protected void crash()
+    {
+        crashAndExplode();
+    }
+    protected final void crashAndExplode()
+    {
+        engineRunning = false;
+        altitude = getMinAltitude();
+        exploded = true;
+    }
+
+    protected final void crashWithoutExploding()
+    {
+        engineRunning = false;
+        altitude = getMinAltitude();
+    }
+
 }
