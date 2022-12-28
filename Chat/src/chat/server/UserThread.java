@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Objects;
 
 public class UserThread extends Thread
 {
@@ -15,8 +16,8 @@ public class UserThread extends Thread
 
 	public UserThread(IServer server, Socket socket) throws IOException
 	{
-		this.server = server;
-		this.socket = socket;
+		this.server = Objects.requireNonNull(server);;
+		this.socket = Objects.requireNonNull(socket);
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		writer = new PrintWriter(socket.getOutputStream(), true);
 	}

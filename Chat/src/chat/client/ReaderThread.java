@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.Objects;
 
 public class ReaderThread extends Thread
 {
@@ -13,26 +14,31 @@ public class ReaderThread extends Thread
 
     public ReaderThread(Socket socket) throws IOException
     {
+        Objects.requireNonNull(socket);
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
     @Override
     public void run()
     {
-        try {
-            while (true){
+        try
+        {
+            while (true)
+            {
                 String message = reader.readLine();
-
-                // If message is not null, then display it in the console
-                if (message != null) {
+                if (message != null)
                     System.out.println(message);
-                } else {
-                    // Otherwise, return
+                else
                     return;
-                }
             }
-        }catch (IOException e){
+        }
+        catch (IOException e)
+        {
 
         }
     }
+
+
+
+
 }

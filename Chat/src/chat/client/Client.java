@@ -8,35 +8,31 @@ import java.util.Objects;
 
 public class Client
 {
-    String host = "LocalHost";
-    int port = 7777;
+    private final String host;
+    private final int port;
 
     public Client(String host, int port)
     {
         // TODO: Initialize fields equal to parameters
-        host = Objects.requireNonNull(host);
-        port = port;
+        this.host = Objects.requireNonNull(host);
+        this.port = port;
     }
 
     public void start()
     {
+        try
+        {
+            Socket socket = new Socket(host, port);
 
-        try {
-            Socket socket = new Socket(host , port);
-            ObjectOutputStream writer = n   ew ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream reader = new ObjectInputStream(socket.getInputStream());
-            {
-                //  Start the writer thread
+            WriterThread writer = new WriterThread(socket);
+            ReaderThread reader = new ReaderThread(socket);
 
-                //  Start the reader thread
-            }
-        } catch (IOException e) {
+            writer.start();
+            reader.start();
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
-
-
-
-
-
     }
 }

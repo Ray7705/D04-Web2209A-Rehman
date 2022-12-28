@@ -9,59 +9,64 @@ import java.util.Objects;
 
 public class WriterThread extends Thread
 {
-    // TODO: Socket field
-    Socket socket = new Socket("localhost" , 7777);
 
-    // TODO: PrintWriter field (for writing to server)
-    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-    // TODO: BufferedReader field (for reading from System.in console)
-    BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
+    private final Socket socket;
+    private final PrintWriter writer;
+    private final BufferedReader reader;
 
     public WriterThread(Socket socket) throws IOException
     {
-
-        // TODO: Store socket parameter in field
-        // TODO: Initialize writer field by creating a PrintWriter with socket's output stream
-        // TODO: Initialize reader field by creating a BufferedReader that reads from System.in
-        socket = Objects.requireNonNull(socket);
-        out = new PrintWriter(socket.getOutputStream());
-        consoleReader = new BufferedReader(new InputStreamReader(System.in));
-
-
-
-
+        this.socket = Objects.requireNonNull(socket);
+        writer = new PrintWriter(socket.getOutputStream());
+        reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
     @Override
-    public void run()
-    {
-
+    public void run() {
         try {
-            System.out.println("Enter Your Username: ");
-            String username = consoleReader.readLine();
+            String username = readUsername();
+            writer.println(username);
+            writer.flush();
 
-            out.println(username);
-            while (true){
-                System.out.print("Enter your message: ");
-                String message = consoleReader.readLine();
+            while (true) {
+                String message = reader.readLine();
+                writer.println(message);
+                writer.flush();
 
-                // Send message to server
-                out.println(message);
-
-                // If message equals "quit", then return
-                if (message.equals("quit")) {
+                if (message.equalsIgnoreCase("quit"))
                     return;
-                }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                socket.close();
-            } catch (IOException e) {
+        } finally {
+            tryCloseSocket();
+        }
+    }
 
-            }
+
+    private String readUsername() throws IOException
+    {
+        while (true)
+        {
+            System.out.println("Enter username:");
+            String username = reader.readLine();
+            if (username != null && !username.isBlank())
+                return username;
+
+            System.out.println("Error: Username should not be empty.");
+        }
+    }
+
+    private void tryCloseSocket()
+    {
+        try
+        {
+            socket.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 }
